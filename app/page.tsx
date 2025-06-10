@@ -4,22 +4,27 @@ import { TweetSkeleton, EmbeddedTweet, TweetNotFound } from "react-tweet";
 import { getTweet as _getTweet } from "react-tweet/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Twitter } from "lucide-react";
+import { FaSquareXTwitter as XIcon } from "react-icons/fa6";
 
 const getTweet = unstable_cache(
-  async (id: string) => _getTweet(id),
+  async (id: string) => {
+    try {
+      return await _getTweet(id);
+    } catch (error) {
+      console.error(`Failed to fetch tweet ${id}:`, error);
+      return null;
+    }
+  },
   ["tweet"],
   { revalidate: 3600 * 24 }
 );
 
 const TweetPage = async ({ id }: { id: string }) => {
-  try {
-    const tweet = await getTweet(id);
-    return tweet ? <EmbeddedTweet tweet={tweet} /> : <TweetNotFound />;
-  } catch (error) {
-    console.error(error);
-    return <TweetNotFound error={error} />;
+  const tweet = await getTweet(id);
+  if (!tweet) {
+    return <TweetNotFound />;
   }
+  return <EmbeddedTweet tweet={tweet} />;
 };
 
 export default function Home() {
@@ -32,17 +37,20 @@ export default function Home() {
       <p className="text-2xl font-semibold mt-4 text-gray-600">
         &quot;Someone hire Tim!&quot;
       </p>
+      <p className="text-md text-gray-500 mt-2 italic font-medium">
+        If you give me a shoutout, I&apos;ll feature your post here.
+      </p>
       <div className="flex gap-4 justify-center mt-4">
         <Button asChild>
           <Link href="https://x.com/hire_tim_com">
-            <Twitter className="w-4 h-4 mr-2" />
-            Follow
+            <XIcon className="size-6 mr-2" />
+            Follow Me
           </Link>
         </Button>
         <Button asChild variant="outline">
           <Link href={tweetUrl} target="_blank" rel="noopener noreferrer">
-            <Twitter className="w-4 h-4 mr-2" />
-            Share Tweet
+            <XIcon className="size-6 mr-2" />
+            Give a Shoutout
           </Link>
         </Button>
       </div>
