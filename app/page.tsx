@@ -38,7 +38,7 @@ export default function Home() {
         &quot;Someone hire Tim!&quot;
       </p>
       <p className="text-md text-gray-500 mt-2 italic font-medium">
-        If you give me a shoutout, I&apos;ll feature your post here.
+        Give me a shoutout, and I’ll feature your post here!
       </p>
       <div className="flex gap-4 justify-center mt-4">
         <Button asChild>
